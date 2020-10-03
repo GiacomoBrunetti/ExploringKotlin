@@ -1,6 +1,6 @@
 <#-- @ftlvariable name="data" type="com.firstwebsite.IndexData" -->
 <head>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css"/>
 </head>
 <html>
     <body>

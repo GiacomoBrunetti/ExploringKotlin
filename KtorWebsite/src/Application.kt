@@ -46,7 +46,8 @@ fun Application.module() {
 
     routing {
         get("/") {
-            call.respondText("HELLO WORLD!", contentType = ContentType.Text.Plain)
+            val session = call.sessions.get<MySession>()
+            call.respond(FreeMarkerContent(template="home.ftl", mapOf("username" to session?.name)))
         }
 
         route("/login") {
