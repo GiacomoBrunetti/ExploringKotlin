@@ -25,12 +25,20 @@ fun Application.module() {
     }
 
     install(Sessions) {
-        cookie<MySession>("MY_SESSION") {
+        cookie<MySession>("SESSION") {
             cookie.extensions["SameSite"] = "lax"
         }
     }
 
     install(Authentication) {
+        form("login") {
+            userParamName = "username"
+            passwordParamName = "password"
+            challenge(redirectUrl = "/login")
+            validate {
+                credentials -> if (credentials.name != "" && credentials.password != "") UserIdPrincipal(credentials.name) else null
+            }
+        }
     }
 
     install(PartialContent) {
@@ -45,16 +53,10 @@ fun Application.module() {
             get {
                 call.respond(FreeMarkerContent(template="login.ftl", null))
             }
-            post {
-                val post = call.receiveParameters()
-                val username: String? = post["username"]
-                val password: String? = post["password"]
-                if (username == "") {
-                    call.respond(FreeMarkerContent("login.ftl", mapOf("error" to "Username is required")))
-                } else if (password == "") {
-                    call.respond(FreeMarkerContent("login.ftl", mapOf("error" to "Password is required")))
-                } else {
-                    call.respondRedirect("/")
+            authenticate("login") {
+                post {
+                    val principal = call.principal<UserIdPrincipal>()
+                    call.respondRedirect("/", permanent = false)
                 }
 
             }

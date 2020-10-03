@@ -1,7 +1,10 @@
 
 fun forStatement() {
     val names = arrayOf("Giacomo", "Giulia", null)
-    names.forEach { name -> greet(name) }
+    for (name: String? in names) {
+        greet(name)
+    }
+//    names.forEach { name -> greet(name) }
 }
 
 fun whenStatement(name: String?): String {
