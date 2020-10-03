@@ -56,6 +56,7 @@ fun Application.module() {
             authenticate("login") {
                 post {
                     val principal = call.principal<UserIdPrincipal>()
+                    call.sessions.set("SESSION", MySession(name = principal?.name))
                     call.respondRedirect("/", permanent = false)
                 }
 
@@ -84,15 +85,10 @@ fun Application.module() {
             resources("static")
         }
 
-        get("/session/increment") {
-            val session = call.sessions.get<MySession>() ?: MySession()
-            call.sessions.set(session.copy(count = session.count + 1))
-            call.respondText("Counter is ${session.count}. Refresh to increment.")
-        }
     }
 }
 
 data class IndexData(val items: List<Int>)
 
-data class MySession(val count: Int = 0)
+data class MySession(val name: String? = "Anonymous")
 
